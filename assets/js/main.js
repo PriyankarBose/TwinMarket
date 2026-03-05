@@ -106,6 +106,8 @@ function initScrollAnimations() {
                         }, index * 100);
                     });
                 }
+            } else {
+                entry.target.classList.remove('animate-in');
             }
         });
     }, observerOptions);
@@ -273,17 +275,47 @@ function animateNumbers() {
     const numbers = document.querySelectorAll('.stat-number');
 
     numbers.forEach(num => {
-        const target = parseInt(num.textContent);
+        const target = parseInt(num.dataset.target || num.textContent);
+        const hasPlus = (num.dataset.hasPlus || '').toString() === 'true';
+
+        if (num._timer) {
+            clearInterval(num._timer);
+        }
+
         let current = 0;
         const increment = target / 50;
+
         const timer = setInterval(() => {
             current += increment;
             if (current >= target) {
                 current = target;
                 clearInterval(timer);
             }
-            num.textContent = Math.floor(current) + (num.textContent.includes('+') ? '+' : '');
+            num.textContent = Math.floor(current) + (hasPlus ? '+' : '');
         }, 30);
+
+        num._timer = timer;
+    });
+}
+
+function resetNumbers() {
+    const numbers = document.querySelectorAll('.stat-number');
+
+    numbers.forEach(num => {
+        if (num._timer) {
+            clearInterval(num._timer);
+        }
+
+        const raw = (num.dataset.rawValue || num.textContent).toString().trim();
+        const hasPlus = raw.includes('+');
+        const target = parseInt(raw, 10);
+
+        if (!Number.isNaN(target)) {
+            num.dataset.target = String(target);
+            num.dataset.hasPlus = hasPlus ? 'true' : 'false';
+            num.dataset.rawValue = raw;
+            num.textContent = '0' + (hasPlus ? '+' : '');
+        }
     });
 }
 
@@ -292,13 +324,15 @@ const statsObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             animateNumbers();
-            statsObserver.unobserve(entry.target);
+        } else {
+            resetNumbers();
         }
     });
 }, { threshold: 0.5 });
 
 const heroStats = document.querySelector('.hero-stats');
 if (heroStats) {
+    resetNumbers();
     statsObserver.observe(heroStats);
 }
 
@@ -336,12 +370,16 @@ function initOpinionLeaderVisualization() {
             const node = {
                 x: leader.x + Math.cos(angle) * distance,
                 y: leader.y + Math.sin(angle) * distance,
+                baseX: leader.x + Math.cos(angle) * distance,
+                baseY: leader.y + Math.sin(angle) * distance,
                 radius: 4,
                 influence: 0,
                 isLeader: false,
                 id: nodeId++,
                 layer: 1,
-                parentId: i
+                parentId: i,
+                phase: Math.random() * Math.PI * 2,
+                driftSpeed: 0.6 + Math.random() * 0.6
             };
             nodes.push(node);
             edges.push({ from: i, to: node.id });
@@ -355,11 +393,15 @@ function initOpinionLeaderVisualization() {
         const node = {
             x: 200 + Math.cos(angle) * distance,
             y: 150 + Math.sin(angle) * distance,
+            baseX: 200 + Math.cos(angle) * distance,
+            baseY: 150 + Math.sin(angle) * distance,
             radius: 3,
             influence: 0,
             isLeader: false,
             id: nodeId++,
-            layer: 2
+            layer: 2,
+            phase: Math.random() * Math.PI * 2,
+            driftSpeed: 0.5 + Math.random() * 0.7
         };
         nodes.push(node);
 
@@ -422,6 +464,10 @@ function initOpinionLeaderVisualization() {
         // 更新和绘制节点
         nodes.forEach(node => {
             if (!node.isLeader) {
+                const localT = propagationTime * node.driftSpeed + node.phase;
+                node.x = node.baseX + Math.cos(localT) * (node.layer === 1 ? 3 : 4);
+                node.y = node.baseY + Math.sin(localT * 1.2) * (node.layer === 1 ? 2 : 3);
+
                 // 计算从领袖传播过来的影响
                 let maxInfluence = 0;
                 edges.forEach(edge => {
@@ -499,7 +545,9 @@ function initPolarizationVisualization() {
             vy: (Math.random() - 0.5) * 0.5,
             radius: 4 + Math.random() * 2,
             color: '#3b82f6',
-            belief: -1
+            belief: -1,
+            phase: Math.random() * Math.PI * 2,
+            phaseSpeed: 0.8 + Math.random() * 0.8
         });
     }
 
@@ -512,7 +560,9 @@ function initPolarizationVisualization() {
             vy: (Math.random() - 0.5) * 0.5,
             radius: 4 + Math.random() * 2,
             color: '#ef4444',
-            belief: 1
+            belief: 1,
+            phase: Math.random() * Math.PI * 2,
+            phaseSpeed: 0.8 + Math.random() * 0.8
         });
     }
 
@@ -520,6 +570,8 @@ function initPolarizationVisualization() {
 
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const time = performance.now() * 0.001;
 
         // 绘制分隔线
         ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
@@ -533,6 +585,16 @@ function initPolarizationVisualization() {
 
         // 更新和绘制节点
         allNodes.forEach(node => {
+            node.phase += 0.015 * node.phaseSpeed;
+
+            // 持续微扰，避免动画静止
+            node.vx += (Math.random() - 0.5) * 0.04;
+            node.vy += (Math.random() - 0.5) * 0.04;
+
+            // 轻微周期扰动，让群体始终在变化
+            node.vx += Math.sin(time + node.phase) * 0.01;
+            node.vy += Math.cos(time * 1.2 + node.phase) * 0.01;
+
             // 更新位置
             node.x += node.vx;
             node.y += node.vy;
@@ -549,6 +611,13 @@ function initPolarizationVisualization() {
                 node.vy += dy * 0.001;
             }
 
+            // 保持速度下限，避免长时间静止
+            const speed = Math.sqrt(node.vx * node.vx + node.vy * node.vy);
+            if (speed < 0.08) {
+                node.vx += (Math.random() - 0.5) * 0.08;
+                node.vy += (Math.random() - 0.5) * 0.08;
+            }
+
             // 边界反弹
             if (node.x < node.radius || node.x > canvas.width - node.radius) {
                 node.vx *= -0.8;
@@ -560,6 +629,13 @@ function initPolarizationVisualization() {
             // 速度衰减
             node.vx *= 0.98;
             node.vy *= 0.98;
+
+            // 限制最大速度，保持稳定
+            const nextSpeed = Math.sqrt(node.vx * node.vx + node.vy * node.vy);
+            if (nextSpeed > 1.6) {
+                node.vx = (node.vx / nextSpeed) * 1.6;
+                node.vy = (node.vy / nextSpeed) * 1.6;
+            }
 
             // 绘制节点
             ctx.fillStyle = node.color;
