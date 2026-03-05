@@ -54,19 +54,29 @@ def calculate_custom_metric(trades):
     pass
 ```
 
+## 📚 使用 TwinMarket 的优秀论文
+
+欢迎社区贡献。如果你的论文使用了 TwinMarket，欢迎提交 PR 添加到这里。
+
+| 标题 | 代码 | 论文 |
+| --- | --- | --- |
+| Interpreting Emergent Extreme Events in Multi-Agent Systems | https://github.com/mjl0613ddm/IEEE | https://arxiv.org/abs/2601.20538 |
+
 ## 🧾 引用
 
 ```bibtex
-@misc{yang2025twinmarketneurips,
+@inproceedings{yang2025twinmarket,
       title={TwinMarket: A Scalable Behavioral and Social Simulation for Financial Markets},
       author={Yuzhe Yang and Yifei Zhang and Minghao Wu and Kaidi Zhang and
               Yunmiao Zhang and Honghai Yu and Yan Hu and Benyou Wang},
+      booktitle={The Thirty-ninth Annual Conference on Neural Information Processing Systems (NeurIPS)},
+      series={NeurIPS},
+      volume={39},
       year={2025},
-      eprint={2502.01506},
-      archivePrefix={arXiv},
-      primaryClass={cs.CE},
       url={https://arxiv.org/abs/2502.01506},
 }
 ```
 
+## 📄 许可证
 
+本项目采用 MIT License，详见 `LICENSE`。

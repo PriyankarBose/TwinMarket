@@ -1,4 +1,4 @@
-# TwinMarket: A Scalable Behavioral and Social Simulation for Financial Markets 
+# TwinMarket: A Scalable Behavioral and Social Simulation for Financial Markets
 
 
 [![arXiv](https://img.shields.io/badge/arXiv-2502.01506-b31b1b.svg)](https://arxiv.org/abs/2502.01506)
@@ -64,6 +64,14 @@ def calculate_custom_metric(trades):
     pass
 ```
 
+## 📚 Awesome Papers Using TwinMarket
+
+We welcome community contributions. If your paper uses TwinMarket, feel free to open a PR and add it here.
+
+| Title | Code | Paper |
+| --- | --- | --- |
+| Interpreting Emergent Extreme Events in Multi-Agent Systems | https://github.com/mjl0613ddm/IEEE | https://arxiv.org/abs/2601.20538 |
+
 ## 🧾 Citation
 
 ```bibtex
@@ -71,12 +79,18 @@ def calculate_custom_metric(trades):
   title     = {TwinMarket: A Scalable Behavioral and Social Simulation for Financial Markets},
   author    = {Yuzhe Yang and Yifei Zhang and Minghao Wu and Kaidi Zhang and
                Yunmiao Zhang and Honghai Yu and Yan Hu and Benyou Wang},
-  booktitle = {Proceedings of the 39th Annual Conference on Neural Information Processing Systems (NeurIPS)},
+  booktitle = {The Thirty-ninth Annual Conference on Neural Information Processing Systems (NeurIPS)},
+  series    = {NeurIPS},
+  volume    = {39},
   year      = {2025},
   url       = {https://arxiv.org/abs/2502.01506}
 }
 ```
 
-## Star History
+## 📄 License
+
+This project is licensed under the MIT License. See `LICENSE` for details.
+
+## 🌟 Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=FreedomIntelligence/TwinMarket&type=date&legend=top-left)](https://www.star-history.com/#FreedomIntelligence/TwinMarket&type=date&legend=top-left)

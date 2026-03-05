@@ -138,18 +138,58 @@ body {
 }
 
 .hero-title {
-    font-size: 4rem;
+    font-size: 3.25rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    line-height: 1.1;
+    margin-bottom: 2rem;
     animation: fadeInUp 1s ease;
 }
 
-.hero-subtitle {
-    font-size: 1.5rem;
+.hero-title-sub {
     font-weight: 400;
+}
+
+.hero-subtitle {
+    font-size: 3.6rem;
+    font-weight: 400;
+    line-height: 1.2;
     margin-bottom: 1.5rem;
     opacity: 0.95;
     animation: fadeInUp 1s ease 0.2s;
+    animation-fill-mode: backwards;
+}
+
+.hero-authors {
+    font-size: 1.1rem;
+    margin: 0 auto 1.25rem;
+    opacity: 0.9;
+    max-width: 900px;
+    animation: fadeInUp 1s ease 0.3s;
+    animation-fill-mode: backwards;
+}
+
+.hero-authors sup,
+.hero-affiliations sup,
+.hero-note sup {
+    font-size: 0.7em;
+    vertical-align: super;
+}
+
+.hero-affiliations {
+    font-size: 1rem;
+    margin: 0 auto 0.5rem;
+    opacity: 0.85;
+    max-width: 900px;
+    animation: fadeInUp 1s ease 0.35s;
+    animation-fill-mode: backwards;
+}
+
+.hero-note {
+    font-size: 0.95rem;
+    margin: 0 auto 1.5rem;
+    opacity: 0.82;
+    max-width: 900px;
+    animation: fadeInUp 1s ease 0.38s;
     animation-fill-mode: backwards;
 }
 
@@ -207,8 +247,8 @@ body {
     display: flex;
     gap: 1rem;
     justify-content: center;
-    animation: fadeInUp 1s ease 0.8s;
-    animation-fill-mode: backwards;
+    margin-bottom: 2rem;
+    animation: fadeInUp 1s ease;
 }
 
 .btn {
@@ -1030,7 +1070,7 @@ section {
 /* Image Styles */
 img {
     border-radius: 8px;
-    box-shadow: var(--card-shadow);
+    box-shadow: none;
 }
 
 /* 滚动条样式 */
