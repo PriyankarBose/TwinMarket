@@ -1,429 +1,989 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-YE837RNHM5"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-YE837RNHM5');
-</script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TwinMarket - A Scalable Behavioral and Social Simulation for Financial Markets</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/responsive.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg: #ffffff;
+            --accent: #0891b2;
+            --accent-dim: rgba(8, 145, 178, 0.12);
+            --accent-glow: rgba(8, 145, 178, 0.25);
+            --cyan: #0e7490;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: rgba(8, 145, 178, 0.2);
+            --sidebar-width: 220px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .layout {
+            max-width: 1240px;
+            margin: 0 auto;
+            display: flex;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            flex-shrink: 0;
+            position: sticky;
+            top: 32px;
+            height: fit-content;
+            padding: 50px 0 0 24px;
+        }
+
+        .nav-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .sidebar nav a {
+            display: block;
+            text-decoration: none;
+            color: var(--text-muted);
+            padding: 6px 0;
+            padding-left: 12px;
+            margin-left: -2px;
+            border-left: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            color: var(--accent);
+            border-left-color: var(--accent);
+        }
+
+        .container {
+            flex: 1;
+            min-width: 0;
+            max-width: 940px;
+            padding: 50px 24px 80px 40px;
+        }
+
+        header {
+            text-align: left;
+            margin-bottom: 56px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        header::after {
+            content: 'TwinMarket';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg);
+            padding: 0 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.24em;
+            color: var(--accent);
+        }
+
+        .award-badge {
+            display: table;
+            margin: 0 auto 10px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 4px 14px;
+            color: var(--text-muted);
+            font-size: 0.86rem;
+        }
+
+        .award-badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .award-badges .award-badge {
+            margin: 0;
+        }
+
+        h1 {
+            margin: 0 0 16px;
+            font-size: 2.1rem;
+            font-weight: 600;
+            line-height: 1.3;
+            letter-spacing: -0.02em;
+        }
+
+        h1 .title-accent {
+            background: linear-gradient(90deg, #0e7490, #0891b2, #22d3ee, #06b6d4, #0e7490);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: title-gradient 6s ease infinite;
+        }
+
+        @keyframes title-gradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .authors {
+            font-size: 1.04rem;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+
+        .authors a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .authors a:hover {
+            color: var(--cyan);
+            text-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .author-note {
+            margin-bottom: 12px;
+            color: var(--text-muted);
+            font-size: 0.86rem;
+            font-style: italic;
+        }
+
+        .affiliations {
+            text-align: left;
+            margin-bottom: 22px;
+        }
+
+        .affil-list {
+            display: flex;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            gap: 10px 28px;
+        }
+
+        .affil-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .affil-num {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .affil-logo {
+            height: 2em;
+            width: auto;
+            max-height: 36px;
+            object-fit: contain;
+            vertical-align: middle;
+        }
+
+        .affil-name {
+            color: var(--text);
+            font-size: 0.9rem;
+            text-align: left;
+            line-height: 1.4;
+        }
+
+        .links {
+            display: flex;
+            justify-content: flex-start;
+            gap: 12px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+
+        .links .btn {
+            border-radius: 999px;
+            padding: 6px 16px;
+            font-size: 0.84rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            font-family: 'JetBrains Mono', monospace;
+            transition: box-shadow 0.3s, transform 0.2s, background 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--cyan) 100%);
+            color: #fff;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn:hover {
+            box-shadow: 0 0 22px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent-dim);
+        }
+
+        .btn-gh,
+        .btn-arxiv {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-gh svg,
+        .btn-arxiv img {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .btn-outline.btn-arxiv img {
+            filter: brightness(0) saturate(100%) invert(39%) sepia(43%) saturate(1467%) hue-rotate(153deg) brightness(95%) contrast(92%);
+        }
+
+        .btn-gh svg {
+            fill: currentColor;
+        }
+
+        .more-research {
+            position: relative;
+        }
+
+        .more-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            min-width: 220px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 6px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+            display: none;
+            z-index: 20;
+        }
+
+        .more-menu.open {
+            display: block;
+        }
+
+        .more-menu a {
+            display: block;
+            padding: 8px 10px;
+            border-radius: 8px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.84rem;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .more-menu a:hover {
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        .hero-description {
+            margin: 20px auto 12px;
+            max-width: 860px;
+            color: var(--text-muted);
+            text-align: left;
+        }
+
+        .stats-grid {
+            margin-top: 22px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .stat-item {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .stat-icon {
+            font-size: 1.1rem;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        section {
+            margin-bottom: 56px;
+        }
+
+        h2 {
+            margin: 0 0 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text);
+            border-left: 3px solid var(--accent);
+            padding-left: 16px;
+            letter-spacing: -0.01em;
+        }
+
+        h3 {
+            margin: 28px 0 14px;
+            font-size: 1.15rem;
+            color: var(--cyan);
+            font-weight: 500;
+        }
+
+        h4 {
+            margin: 0 0 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        p {
+            margin: 0 0 14px;
+            color: var(--text);
+            text-align: justify;
+        }
+
+        ul {
+            margin: 0 0 10px 1.1rem;
+            padding: 0;
+        }
+
+        .figure-container {
+            text-align: center;
+            margin: 24px 0;
+        }
+
+        .figure-container img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .caption {
+            margin-top: 10px;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .card {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.82);
+            margin-bottom: 10px;
+        }
+
+        .icon-label {
+            margin-right: 6px;
+        }
+
+        .tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.84rem;
+            color: var(--text-muted);
+            background: var(--accent-dim);
+        }
+
+        .data-stat {
+            margin-top: 8px;
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.84rem;
+        }
+
+        .canvas-box {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .scalability-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+            margin: 18px 0 22px;
+        }
+
+        .scalability-row .left {
+            flex: 4 1 0;
+        }
+
+        .scalability-row .right {
+            flex: 6 1 0;
+        }
+
+        .scalability-row img {
+            width: 100%;
+            max-width: 100%;
+            display: block;
+        }
+
+        canvas {
+            width: 100%;
+            max-width: 400px;
+            height: 300px;
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            background: linear-gradient(180deg, rgba(8, 145, 178, 0.06), rgba(8, 145, 178, 0.02));
+            display: block;
+            margin: 0 auto;
+        }
+
+        .keyword-highlight {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .viz-description {
+            margin-top: 8px;
+            color: var(--text-muted);
+            font-size: 0.86rem;
+            text-align: center;
+        }
+
+        pre {
+            background: rgba(255, 255, 255, 0.82);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--cyan);
+            margin: 0;
+        }
+
+        .citation-wrap {
+            position: relative;
+        }
+
+        .btn-copy {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: none;
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--accent);
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.2s, opacity 0.2s;
+        }
+
+        .btn-copy:hover {
+            background: var(--cyan);
+        }
+
+        .btn-copy.copied {
+            opacity: 0.85;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        footer p {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin: 0;
+        }
+
+        @media (max-width: 900px) {
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: static;
+                width: 100%;
+                padding: 24px 24px 0;
+                border-bottom: 1px solid var(--border);
+                padding-bottom: 16px;
+            }
+
+            .sidebar nav {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .sidebar nav a {
+                border-left: none;
+                padding-left: 0;
+                margin-left: 0;
+            }
+
+            .container {
+                padding: 32px 16px 60px;
+            }
+
+            .grid-3,
+            .grid-2,
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .scalability-row {
+                flex-direction: column;
+            }
+
+            .scalability-row .left,
+            .scalability-row .right {
+                flex: none;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.62rem;
+            }
+
+            .links,
+            .affil-list {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-brand">
-                <h2>TwinMarket</h2>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#overview" class="nav-link">Overview</a></li>
-                <li><a href="#framework" class="nav-link">Framework</a></li>
-                <li><a href="#results" class="nav-link">Results</a></li>
-                <li><a href="#scalability" class="nav-link">Scalability</a></li>
-                <li><a href="#citation" class="nav-link">Citation</a></li>
-            </ul>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </nav>
+    <nav class="navbar" style="display:none"></nav>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="nav-title">Contents</div>
+            <nav>
+                <a href="#home">Home</a>
+                <a href="#overview">Overview</a>
+                <a href="#features">Features</a>
+                <a href="#framework">Framework</a>
+                <a href="#results">Results</a>
+                <a href="#scalability">Scalability</a>
+                <a href="#citation">Citation</a>
+            </nav>
+        </aside>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <!-- Award Badge -->
-                <div class="award-badge">
-                    <span class="award-icon">🏆</span>
-                    <span class="award-text"> NeurIPS 2025 & ICLR Financial AI Best Paper Award</span>
+        <main class="container">
+            <header id="home">
+                <div class="award-badges">
+                    <div class="award-badge">NeurIPS 2025</div>
+                    <div class="award-badge">🏆 ICLR 2025 Financial AI Best Paper Award</div>
                 </div>
-                <h1 class="hero-title">TwinMarket:</h1>
-                <h2 class="hero-subtitle">A Scalable Behavioral and Social Simulation for Financial Markets</h2>
+                <h1><span class="title-accent">TwinMarket:</span> A Scalable Behavioral and Social Simulation for Financial Markets</h1>
+
+                <div class="authors">
+                    <a href="https://yuzheyang.com" target="_blank" rel="noopener">Yuzhe Yang</a><sup>1,*</sup>,
+                    <a href="https://hoder-zyf.github.io/" target="_blank" rel="noopener">Yifei Zhang</a><sup>1,2,*</sup>,
+                    <a href="#">Minghao Wu</a><sup>1,2,*</sup>,<br>
+                    <a href="#">Kaidi Zhang</a><sup>1</sup>,
+                    <a href="#">Yunmiao Zhang</a><sup>2</sup>,
+                    <a href="#">Honghai Yu</a><sup>2,‡</sup>,
+                    <a href="#">Yan Hu</a><sup>1,‡</sup>,
+                    <a href="https://wabyking.github.io/old.html" target="_blank" rel="noopener">Benyou Wang</a><sup>1,‡</sup>
+                </div>
+                <div class="author-note"><sup>*</sup> Equal contribution &nbsp; <sup>‡</sup> Equal advising</div>
+
+                <div class="affiliations">
+                    <div class="affil-list">
+                        <div class="affil-item">
+                            <span class="affil-num">1</span>
+                            <img src="assets/logo/CUHK.svg" alt="CUHK-Shenzhen" class="affil-logo">
+                            <span class="affil-name">CUHK-Shenzhen</span>
+                        </div>
+                        <div class="affil-item">
+                            <span class="affil-num">2</span>
+                            <img src="assets/logo/NJU.svg" alt="Nanjing University" class="affil-logo">
+                            <span class="affil-name">Nanjing University</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="links">
+                    <a href="https://arxiv.org/abs/2502.01506" class="btn btn-outline btn-arxiv" target="_blank" rel="noopener">
+                        <img src="https://arxiv.org/static/browse/0.3.4/images/arxiv-logomark-small-white.svg" alt="">
+                        arXiv
+                    </a>
+                    <a href="https://github.com/freedomintelligence/TwinMarket" class="btn btn-outline btn-gh" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        Code
+                    </a>
+                    <a href="https://neurips.cc/media/PosterPDFs/NeurIPS%202025/116676.png?t=1762476065.2065222" class="btn btn-outline" target="_blank" rel="noopener">🖼️ Poster</a>
+                    <a href="https://iclr.cc/virtual/2025/10000145" class="btn btn-outline" target="_blank" rel="noopener">🎤 Talk</a>
+                    <a href="#citation" class="btn btn-outline">📝 BibTeX</a>
+                    <div class="more-research">
+                        <button type="button" class="btn btn-outline" id="moreResearchBtn">🔎 More Research</button>
+                        <div class="more-menu" id="moreResearchMenu" role="menu" aria-label="More Research Links">
+                            <a href="https://github.com/TobyYang7/UCFE-Benchmark" target="_blank" rel="noopener">UCFE-Bench</a>
+                        </div>
+                    </div>
+                </div>
+
                 <p class="hero-description">
-                    A novel multi-agent framework that leverages Large Language Models to simulate socio-economic systems,
-                    modeling individual investor behaviors, social interactions, and emergent market phenomena
+                    We aim to build a foundation-scale market simulator where LLM-driven agents capture human-like investor behavior,
+                    social influence, and collective adaptation, enabling us to reveal, stress-test, and ultimately understand
+                    emergent macro-level financial dynamics from micro-level decision making.
                 </p>
-                <div class="hero-stats">
-                    <div class="stat-item">
-                        <div class="stat-icon">🤖</div>
-                        <div class="stat-number">1000+</div>
-                        <div class="stat-label">LLM Agents</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-icon">📊</div>
-                        <div class="stat-number">50</div>
-                        <div class="stat-label">SSE Stocks</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-icon">📈</div>
-                        <div class="stat-number">4</div>
-                        <div class="stat-label">Stylized Facts</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-icon">🧠</div>
-                        <div class="stat-highlight">BDI</div>
-                        <div class="stat-label">Framework</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-icon">👥</div>
-                        <div class="stat-highlight">Real</div>
-                        <div class="stat-label">User Data</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-icon">⚡</div>
-                        <div class="stat-highlight">Scalable</div>
-                        <div class="stat-label">Architecture</div>
-                    </div>
-                </div>
-                <div class="hero-buttons">
-                    <a href="https://arxiv.org/abs/2502.01506" class="btn btn-primary" target="_blank">
-                        <span class="btn-icon">📄</span> Read Paper
-                    </a>
-                    <a href="https://github.com/freedomintelligence/TwinMarket" class="btn btn-github" target="_blank">
-                        <svg class="github-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                        </svg>
-                        View Code
-                    </a>
-                    <a href="#citation" class="btn btn-secondary">
-                        <span class="btn-icon">📝</span> Cite This Work
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Overview Section with Image -->
-    <section id="overview" class="overview">
-        <div class="container">
-            <h2 class="section-title">Overview</h2>
-            <div class="overview-image">
-                <img src="assets/img/TwinMarket.png" alt="TwinMarket Overview" style="width: 100%; max-width: 1000px; margin: 0 auto; display: block;">
-            </div>
-            <div class="overview-content">
-                <div class="overview-highlights">
-                    <div class="highlight-box">
-                        <span class="highlight-icon">🎯</span>
-                        <h4>Core Problem</h4>
+                <div class="stats-grid hero-stats">
+                    <div class="stat-item"><div class="stat-icon">🤖</div><div class="stat-value stat-number">1000+</div><div>LLM Agents</div></div>
+                    <div class="stat-item"><div class="stat-icon">📊</div><div class="stat-value stat-number">50</div><div>SSE Stocks</div></div>
+                    <div class="stat-item"><div class="stat-icon">📈</div><div class="stat-value stat-number">4</div><div>Stylized Facts</div></div>
+                    <div class="stat-item"><div class="stat-icon">🧠</div><div class="stat-value">Belief-Desire-Intention</div><div>Framework</div></div>
+                    <div class="stat-item"><div class="stat-icon">👥</div><div class="stat-value">Real</div><div>User Data</div></div>
+                    <div class="stat-item"><div class="stat-icon">⚡</div><div class="stat-value">Scalable</div><div>Architecture</div></div>
+                </div>
+            </header>
+
+            <section id="overview">
+                <h2>Overview</h2>
+                <div class="figure-container">
+                    <img src="assets/img/TwinMarket.png" alt="TwinMarket Overview">
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h4><span class="icon-label">🎯</span>Core Problem</h4>
                         <p>Traditional ABMs struggle to capture the diversity of human behavior, particularly irrational factors in behavioral economics</p>
                     </div>
-                    <div class="highlight-box">
-                        <span class="highlight-icon">⚡</span>
-                        <h4>Our Solution</h4>
+                    <div class="card">
+                        <h4><span class="icon-label">⚡</span>Our Solution</h4>
                         <p>LLM agents that account for cognitive biases, emotional fluctuations, and non-rational influences in market simulations</p>
                     </div>
                 </div>
-                <p class="lead-text">
-                    <span class="text-icon">💡</span> <strong>TwinMarket</strong> examines how individual behaviors, through interactions and feedback mechanisms,
+
+                <p>
+                    💡 <strong>TwinMarket</strong> examines how individual behaviors, through interactions and feedback mechanisms,
                     give rise to collective dynamics and emergent phenomena in financial markets. Unlike traditional rule-based ABMs,
                     our LLM-based approach captures the full spectrum of human behavior complexity.
                 </p>
-                <p class="lead-text">
-                    <span class="text-icon">🎯</span> Through experiments in a simulated stock market, we demonstrate how individual actions trigger
+                <p>
+                    🎯 Through experiments in a simulated stock market, we demonstrate how individual actions trigger
                     group behaviors, leading to emergent outcomes such as <span class="keyword-highlight">financial bubbles</span>,
                     <span class="keyword-highlight">market recessions</span>, and other collective socio-economic patterns that arise from
                     the complex interplay between individual decision-making and market dynamics.
                 </p>
-            </div>
-        </div>
-    </section>
+            </section>
 
-    <!-- Key Features -->
-    <section id="features" class="innovations">
-        <div class="container">
-            <h2 class="section-title">Key Features</h2>
-            <div class="innovation-grid">
-                <div class="innovation-card">
-                    <div class="innovation-icon">🎯</div>
-                    <h3>Real-World Alignment</h3>
-                    <p>Grounded in established behavioral theories and calibrated with real-world data,
-                       ensuring realistic human behavior modeling</p>
+            <section id="features">
+                <h2>Key Features</h2>
+                <div class="grid-3">
+                    <div class="card">
+                        <h4>🎯 Real-World Alignment</h4>
+                        <p>Grounded in established behavioral theories and calibrated with real-world data,
+                           ensuring realistic human behavior modeling</p>
+                    </div>
+                    <div class="card">
+                        <h4>🔄 Dynamic Interaction Modeling</h4>
+                        <p>Captures diverse human behaviors and their interactions, particularly in the context
+                           of information propagation and social influence</p>
+                    </div>
+                    <div class="card">
+                        <h4>📈 Scalable Market Simulations</h4>
+                        <p>Supports large-scale simulations, allowing researchers to analyze the impact of group
+                           size and interaction complexity on market behavior</p>
+                    </div>
                 </div>
-                <div class="innovation-card">
-                    <div class="innovation-icon">🔄</div>
-                    <h3>Dynamic Interaction Modeling</h3>
-                    <p>Captures diverse human behaviors and their interactions, particularly in the context
-                       of information propagation and social influence</p>
-                </div>
-                <div class="innovation-card">
-                    <div class="innovation-icon">📈</div>
-                    <h3>Scalable Market Simulations</h3>
-                    <p>Supports large-scale simulations, allowing researchers to analyze the impact of group
-                       size and interaction complexity on market behavior</p>
-                </div>
-            </div>
-        </div>
-    </section>
+            </section>
 
-    <!-- Framework Components -->
-    <section id="framework" class="architecture">
-        <div class="container">
-            <h2 class="section-title">Framework Components</h2>
+            <section id="framework">
+                <h2>Framework Components</h2>
 
-            <div class="framework-section">
-                <h3><span class="section-icon">👤</span> Micro-Level Simulation: Individual Behaviors</h3>
-                <div class="framework-grid">
-                    <div class="framework-card">
-                        <div class="card-header">
-                            <span class="card-icon">🧠</span>
-                            <h4>BDI Framework</h4>
-                        </div>
-                        <ul class="feature-list">
-                            <li><span class="list-icon">💡</span> <strong>Belief:</strong> Agent's understanding of the market</li>
-                            <li><span class="list-icon">🎯</span> <strong>Desire:</strong> Agent's objectives or preferences</li>
-                            <li><span class="list-icon">⚡</span> <strong>Intention:</strong> Concrete actions the agent executes</li>
+                <div class="figure-container">
+                    <img src="assets/img/framework.png" alt="TwinMarket framework overview" style="width: 100%; max-width: 100%;">
+                </div>
+
+                <p>
+                    TwinMarket combines micro-level user behavior simulation (BDI-driven decisions) with macro-level market infrastructure simulation
+                    (order-driven trading and social information interaction), and grounds both layers with real behavioral patterns, stock data, news,
+                    and announcements to produce realistic macro market dynamics from individual agent interactions.
+                </p>
+
+                <h3>👤 Micro-Level Simulation: Individual Behaviors</h3>
+                <div class="grid-2">
+                    <div class="card">
+                        <h4>🧠 BDI Framework</h4>
+                        <ul>
+                            <li>💡 <strong>Belief:</strong> Agent's understanding of the market</li>
+                            <li>🎯 <strong>Desire:</strong> Agent's objectives or preferences</li>
+                            <li>⚡ <strong>Intention:</strong> Concrete trading actions.</li>
                         </ul>
                     </div>
-                    <div class="framework-card">
-                        <div class="card-header">
-                            <span class="card-icon">📊</span>
-                            <h4>Behavioral Biases</h4>
-                        </div>
-                        <div class="bias-tags">
-                            <span class="bias-tag">💪 Overconfidence</span>
-                            <span class="bias-tag">📉 Loss Aversion</span>
-                            <span class="bias-tag">🐑 Herding</span>
-                            <span class="bias-tag">🎲 Risk Preferences</span>
+                    <div class="card">
+                        <h4>📊 Behavioral Biases</h4>
+                        <div class="tag-row">
+                            <span class="tag">💪 Overconfidence</span>
+                            <span class="tag">📉 Loss Aversion</span>
+                            <span class="tag">🐑 Herding</span>
+                            <span class="tag">🎲 Risk Preferences</span>
                         </div>
                         <p>Influencing trading decisions and contributing to market heterogeneity</p>
                     </div>
                 </div>
-            </div>
 
-            <div class="framework-section">
-                <h3><span class="section-icon">🌐</span> Macro-Level Simulation: Social Interactions</h3>
-                <div class="framework-grid">
-                    <div class="framework-card">
-                        <div class="card-header">
-                            <span class="card-icon">🌐</span>
-                            <h4>Social Network Construction</h4>
-                        </div>
-                        <ul class="feature-list">
-                            <li><span class="list-icon">🔗</span> <strong>Dynamic Connections:</strong> Network evolves based on trading patterns</li>
-                            <li><span class="list-icon">📋</span> <strong>Behavior Similarity:</strong> Agents connect through similar strategies</li>
-                            <li><span class="list-icon">⏱️</span> <strong>Time Decay:</strong> Recent interactions weighted more heavily</li>
+                <h3>🌐 Macro-Level Simulation: Social Interactions</h3>
+                <div class="grid-2">
+                    <div class="card">
+                        <h4>🌐 Social Network Construction</h4>
+                        <ul>
+                            <li>🔗 <strong>Dynamic Connections:</strong> Network evolves based on trading patterns</li>
+                            <li>📋 <strong>Behavior Similarity:</strong> Agents connect through similar strategies</li>
+                            <li>⏱️ <strong>Time Decay:</strong> Recent interactions weighted more heavily</li>
                         </ul>
                     </div>
-                    <div class="framework-card">
-                        <div class="card-header">
-                            <span class="card-icon">📡</span>
-                            <h4>Information Propagation</h4>
-                        </div>
-                        <ul class="feature-list">
-                            <li><span class="list-icon">📦</span> <strong>Information Aggregation:</strong> Collecting data from social connections</li>
-                            <li><span class="list-icon">👑</span> <strong>Opinion Leaders:</strong> Influential agents shape market sentiment</li>
-                            <li><span class="list-icon">🔄</span> <strong>Echo Chambers:</strong> Formation of polarized belief groups</li>
+                    <div class="card">
+                        <h4>📡 Information Propagation</h4>
+                        <ul>
+                            <li>📦 <strong>Information Aggregation:</strong> Collecting data from social connections</li>
+                            <li>👑 <strong>Opinion Leaders:</strong> Influential agents shape market sentiment</li>
+                            <li>🔄 <strong>Echo Chambers:</strong> Formation of polarized belief groups</li>
                         </ul>
                     </div>
                 </div>
-            </div>
 
-            <div class="framework-section">
                 <h3>Data Sources</h3>
-                <div class="data-image">
-                    <img src="assets/img/data.png" alt="Data Sources" style="width: 100%; max-width: 800px; margin: 2rem auto; display: block;">
+                <div class="figure-container">
+                    <img src="assets/img/data.png" alt="Data Sources" style="max-width: 800px;">
                 </div>
-                <div class="data-grid">
-                    <div class="data-card">
-                        <span class="data-icon">👤</span>
-                        <h4>Real User Profiles</h4>
-                        <p>From Xueqiu social media platform</p>
-                        <div class="data-stat">100K+ users</div>
-                    </div>
-                    <div class="data-card">
-                        <span class="data-icon">💱</span>
-                        <h4>Transaction Details</h4>
-                        <p>Historical trading data from Xueqiu</p>
-                        <div class="data-stat">1M+ trades</div>
-                    </div>
-                    <div class="data-card">
-                        <span class="data-icon">📈</span>
-                        <h4>Stock Data</h4>
-                        <p>SSE 50 index from CSMAR database</p>
-                        <div class="data-stat">50 stocks</div>
-                    </div>
-                    <div class="data-card">
-                        <span class="data-icon">📰</span>
-                        <h4>News & Announcements</h4>
-                        <p>From Sina Finance, 10jqka, and CNINFO</p>
-                        <div class="data-stat">Daily updates</div>
-                    </div>
+                <div class="grid-2">
+                    <div class="card"><h4>👤 Real User Profiles</h4><p>From Xueqiu social media platform</p><div class="data-stat">100K+ users</div></div>
+                    <div class="card"><h4>💱 Transaction Details</h4><p>Historical trading data from Xueqiu</p><div class="data-stat">1M+ trades</div></div>
+                    <div class="card"><h4>📈 Stock Data</h4><p>SSE 50 index from CSMAR database</p><div class="data-stat">50 stocks</div></div>
+                    <div class="card"><h4>📰 News & Announcements</h4><p>From Sina Finance, 10jqka, and CNINFO</p><div class="data-stat">Daily updates</div></div>
                 </div>
-            </div>
-        </div>
-    </section>
+            </section>
 
-    <!-- Experimental Results -->
-    <section id="results" class="results">
-        <div class="container">
-            <h2 class="section-title">Experimental Results</h2>
+            <section id="results">
+                <h2>Experimental Results</h2>
 
-            <!-- Information Propagation -->
-            <div class="results-section">
                 <h3>Information Propagation</h3>
-                <div class="propagation-visualizations">
-                    <div class="viz-container">
+                <div class="grid-2">
+                    <div class="canvas-box">
                         <h4>Opinion Leader Emergence</h4>
                         <canvas id="opinionLeaderCanvas" width="400" height="300"></canvas>
                         <p class="viz-description">Influential nodes emerge and shape network opinions through cascading influence</p>
-                    </div>
-                    <div class="viz-container">
-                        <h4>Information Polarization</h4>
-                        <canvas id="polarizationCanvas" width="400" height="300"></canvas>
-                        <p class="viz-description">Information spreads differently across groups, creating echo chambers and polarized beliefs</p>
-                    </div>
-                </div>
-                <div class="results-grid">
-                    <div class="result-card">
-                        <h4>Opinion Leaders</h4>
                         <p>Simulations reveal the emergence of opinion leaders who exert significant influence on the network,
                            shaping market sentiment and trading behaviors</p>
                     </div>
-                    <div class="result-card">
+                    <div class="canvas-box">
                         <h4>Information Polarization</h4>
+                        <canvas id="polarizationCanvas" width="400" height="300"></canvas>
+                        <p class="viz-description">Information spreads differently across groups, creating echo chambers and polarized beliefs</p>
                         <p>Different information signals lead to the formation of distinct groups with divergent beliefs,
                            creating self-reinforcing feedback loops</p>
                     </div>
                 </div>
-            </div>
 
-            <!-- Behavioral Polarization -->
-            <div class="results-section">
                 <h3>Behavioral Polarization Under Rumors</h3>
-                <div class="results-image">
-                    <img src="assets/img/vis2.png" alt="Behavioral Polarization" style="width: 100%; max-width: 900px; margin: 0 auto; display: block;">
+                <div class="figure-container">
+                    <img src="assets/img/vis2.png" alt="Behavioral Polarization" style="max-width: 900px;">
                 </div>
-                <div class="results-grid">
-                    <div class="result-card">
-                        <h4>Belief Divergence</h4>
-                        <p>Rumors lead to a divergence in user beliefs and the formation of distinct echo chambers</p>
-                    </div>
-                    <div class="result-card">
-                        <h4>Trading Volatility</h4>
-                        <p>Rumors make users more likely to sell, leading to significant increase in sell/buy ratio</p>
-                    </div>
-                    <div class="result-card">
-                        <h4>Market Turbulence</h4>
-                        <p>Rumors cause the market to suffer sharp declines</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Market Dynamics -->
-            <div class="results-section">
-                <h3>Market Dynamics - Stylized Facts</h3>
-                <div class="results-image">
-                    <img src="assets/img/vis4.png" alt="Market Dynamics" style="width: 100%; max-width: 1100px; margin: 2rem auto; display: block;">
-                </div>
-                <div class="stylized-facts-grid">
-                    <div class="fact-card">
-                        <span class="fact-icon">📊</span>
-                        <h4>Fat-tailed Returns</h4>
-                        <p>Extreme price movements occur more frequently than normal distribution</p>
-                    </div>
-                    <div class="fact-card">
-                        <span class="fact-icon">📈</span>
-                        <h4>Volatility Clustering</h4>
-                        <p>High volatility periods are followed by high volatility periods</p>
-                    </div>
-                    <div class="fact-card">
-                        <span class="fact-icon">⚖️</span>
-                        <h4>Leverage Effect</h4>
-                        <p>Negative returns correlate with increased future volatility</p>
-                    </div>
-                    <div class="fact-card">
-                        <span class="fact-icon">💹</span>
-                        <h4>Volume-Return Relationship</h4>
-                        <p>Trading volume positively correlates with price changes</p>
-                    </div>
-                </div>
-                <div class="emergent-behaviors">
-                    <p><strong>Emergent Group Behaviors:</strong> The framework reveals self-fulfilling prophecies where collective
-                    expectations drive market trends, and information cascades where traders rely on perceived consensus rather
-                    than fundamental analysis.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Scalability -->
-    <section id="scalability" class="scalability">
-        <div class="container">
-            <h2 class="section-title">Scalability</h2>
-            <div class="scalability-content">
-                <div class="scalability-image">
-                    <img src="assets/img/price_index_plot.png" alt="Scalability Analysis" style="width: 100%; max-width: 900px; margin: 0 auto; display: block;">
-                </div>
-                <p class="scalability-description">
-                    TwinMarket is designed to scale to large populations, with simulations involving up to <strong>1,000 agents</strong>.
-                    The framework maintains realistic market dynamics even at larger scales, providing a robust platform for
-                    studying complex socio-economic systems.
+                <p>
+                    Rumors lead to a divergence in user beliefs and the formation of distinct echo chambers. At the same time,
+                    rumors make users more likely to sell, leading to significant increase in sell/buy ratio, and eventually
+                    cause the market to suffer sharp declines.
                 </p>
-            </div>
-        </div>
-    </section>
 
-    <!-- Citation -->
-    <section id="citation" class="citation">
-        <div class="container">
-            <h2 class="section-title">How to Cite</h2>
-            <p>If you use TwinMarket in your research, please cite the following paper:</p>
-            <div class="citation-box">
-                <pre><code>@misc{yang2025twinmarketscalablebehavioralsocialsimulation,
+                <h3>Market Dynamics - Stylized Facts</h3>
+                <div class="figure-container">
+                    <img src="assets/img/vis4.png" alt="Market Dynamics" style="width: 100%; max-width: 100%;">
+                </div>
+                <div class="grid-2">
+                    <div class="card"><h4>📊 Fat-tailed Returns</h4><p>Extreme price movements occur more frequently than normal distribution</p></div>
+                    <div class="card"><h4>📈 Volatility Clustering</h4><p>High volatility periods are followed by high volatility periods</p></div>
+                    <div class="card"><h4>⚖️ Leverage Effect</h4><p>Negative returns correlate with increased future volatility</p></div>
+                    <div class="card"><h4>💹 Volume-Return Relationship</h4><p>Trading volume positively correlates with price changes</p></div>
+                </div>
+                <p>
+                    <strong>Emergent Group Behaviors:</strong> The framework reveals self-fulfilling prophecies where collective expectations drive trends,
+                    and information cascades where traders rely on perceived consensus rather than fundamental analysis.
+                </p>
+            </section>
+
+            <section id="scalability">
+                <h2>Scalability</h2>
+                <p>
+                    We test scaling by varying the proportion of activated traders (10%, 20%, 40%, 80%) while keeping other settings fixed.
+                    As activation increases, both average and peak trading volume rise, and prediction errors (RMSE/MAE) decrease.
+                </p>
+
+                <div class="scalability-row">
+                    <div class="left">
+                        <img src="assets/img/scale.png" alt="Scaling law: Performance and activated users">
+                    </div>
+                    <div class="right">
+                        <img src="assets/img/price_index_plot.png" alt="Simulation result of 1,000 agents">
+                    </div>
+                </div>
+
+                <p>
+                    At larger scales (up to 1,000 agents), TwinMarket still tracks real index dynamics with reasonable fidelity,
+                    showing that the framework remains both behaviorally realistic and computationally tractable as participation grows.
+                </p>
+            </section>
+
+            <section id="citation">
+                <h2>How to Cite</h2>
+                <p>If you use TwinMarket in your research, please cite the following paper:</p>
+                <div class="citation-wrap">
+                    <button type="button" class="btn-copy" id="copy-bibtex" aria-label="Copy BibTeX">Copy</button>
+                    <pre><code id="bibtex-code">@inproceedings{yang2025twinmarket,
       title={TwinMarket: A Scalable Behavioral and Social Simulation for Financial Markets},
       author={Yuzhe Yang and Yifei Zhang and Minghao Wu and Kaidi Zhang and
               Yunmiao Zhang and Honghai Yu and Yan Hu and Benyou Wang},
+      booktitle={The Thirty-ninth Annual Conference on Neural Information Processing Systems (NeurIPS)},
       year={2025},
-      eprint={2502.01506},
-      archivePrefix={arXiv},
-      primaryClass={cs.CE},
       url={https://arxiv.org/abs/2502.01506},
 }</code></pre>
-            </div>
-            <div class="citation-buttons">
-                <button onclick="copyToClipboard()" class="btn btn-primary">Copy BibTeX</button>
-                <a href="https://arxiv.org/abs/2502.01506" class="btn btn-secondary" target="_blank">View on arXiv</a>
-            </div>
-        </div>
-    </section>
+                </div>
+            </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 TwinMarket Project. All rights reserved.</p>
-        </div>
-    </footer>
+            <footer>
+                <p>© 2025 TwinMarket Project. All rights reserved.</p>
+            </footer>
+        </main>
+    </div>
 
     <script>
-        function copyToClipboard() {
-            const codeBlock = document.querySelector('.citation-box code');
-            const textArea = document.createElement('textarea');
-            textArea.value = codeBlock.textContent;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
+        (function () {
+            var btn = document.getElementById('copy-bibtex');
+            var code = document.getElementById('bibtex-code');
+            if (btn && code) {
+                btn.addEventListener('click', function () {
+                    var text = code.textContent;
+                    navigator.clipboard.writeText(text).then(function () {
+                        btn.textContent = 'Copied!';
+                        btn.classList.add('copied');
+                        setTimeout(function () {
+                            btn.textContent = 'Copy';
+                            btn.classList.remove('copied');
+                        }, 2000);
+                    });
+                });
+            }
+        })();
 
-            // Show feedback
-            const button = event.target;
-            const originalText = button.textContent;
-            button.textContent = 'Copied!';
-            setTimeout(() => {
-                button.textContent = originalText;
-            }, 2000);
-        }
+        (function () {
+            var nav = document.querySelector('.sidebar nav');
+            var links = nav ? nav.querySelectorAll('a[href^="#"]') : [];
+            var sections = [];
+            links.forEach(function (a) {
+                var id = a.getAttribute('href').slice(1);
+                var el = document.getElementById(id);
+                if (el) sections.push({ el: el, link: a });
+            });
+
+            function updateActive() {
+                var scrollY = window.scrollY || window.pageYOffset;
+                var viewportMid = scrollY + window.innerHeight * 0.35;
+                var active = null;
+
+                for (var i = sections.length - 1; i >= 0; i--) {
+                    var top = sections[i].el.getBoundingClientRect().top + scrollY;
+                    if (top <= viewportMid) {
+                        active = sections[i].link;
+                        break;
+                    }
+                }
+
+                if (!active && sections.length) active = sections[0].link;
+                links.forEach(function (a) { a.classList.remove('active'); });
+                if (active) active.classList.add('active');
+            }
+
+            window.addEventListener('scroll', function () { requestAnimationFrame(updateActive); });
+            window.addEventListener('load', updateActive);
+            updateActive();
+        })();
+
+        (function () {
+            var btn = document.getElementById('moreResearchBtn');
+            var menu = document.getElementById('moreResearchMenu');
+            if (!btn || !menu) return;
+
+            btn.addEventListener('click', function (event) {
+                event.stopPropagation();
+                menu.classList.toggle('open');
+            });
+
+            document.addEventListener('click', function (event) {
+                if (!menu.contains(event.target) && event.target !== btn) {
+                    menu.classList.remove('open');
+                }
+            });
+        })();
+
     </script>
     <script src="assets/js/main.js"></script>
 </body>

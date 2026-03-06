@@ -7,11 +7,26 @@
     }
 
     .hero-title {
-        font-size: 3rem;
+        font-size: 3.2rem;
     }
 
     .hero-subtitle {
-        font-size: 1.3rem;
+        font-size: 2.7rem;
+    }
+
+    .hero-authors {
+        font-size: 1.05rem;
+        padding: 0 20px;
+    }
+
+    .hero-affiliations {
+        font-size: 0.95rem;
+        padding: 0 20px;
+    }
+
+    .hero-note {
+        font-size: 0.9rem;
+        padding: 0 20px;
     }
 
     .architecture-content {
@@ -81,11 +96,26 @@
     }
 
     .hero-title {
-        font-size: 2.5rem;
+        font-size: 3.15rem;
     }
 
     .hero-subtitle {
-        font-size: 1.1rem;
+        font-size: 2.2rem;
+    }
+
+    .hero-authors {
+        font-size: 1rem;
+        padding: 0 20px;
+    }
+
+    .hero-affiliations {
+        font-size: 0.9rem;
+        padding: 0 20px;
+    }
+
+    .hero-note {
+        font-size: 0.85rem;
+        padding: 0 20px;
     }
 
     .hero-description {
@@ -159,11 +189,23 @@
 
     /* Hero手机响应式 */
     .hero-title {
-        font-size: 2rem;
+        font-size: 3.05rem;
     }
 
     .hero-subtitle {
-        font-size: 1rem;
+        font-size: 1.8rem;
+    }
+
+    .hero-authors {
+        font-size: 0.92rem;
+    }
+
+    .hero-affiliations {
+        font-size: 0.85rem;
+    }
+
+    .hero-note {
+        font-size: 0.8rem;
     }
 
     .hero-description {
@@ -264,11 +306,23 @@
 /* 超小屏幕设备 (< 360px) */
 @media screen and (max-width: 360px) {
     .hero-title {
-        font-size: 1.75rem;
+        font-size: 2.92rem;
     }
 
     .hero-subtitle {
-        font-size: 0.9rem;
+        font-size: 1.55rem;
+    }
+
+    .hero-authors {
+        font-size: 0.82rem;
+    }
+
+    .hero-affiliations {
+        font-size: 0.76rem;
+    }
+
+    .hero-note {
+        font-size: 0.72rem;
     }
 
     .btn {
@@ -338,11 +392,11 @@
     }
 
     .hero-title {
-        font-size: 5rem;
+        font-size: 3.35rem;
     }
 
     .hero-subtitle {
-        font-size: 1.75rem;
+        font-size: 4.6rem;
     }
 
     .section-title {
