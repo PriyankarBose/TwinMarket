@@ -6,6 +6,10 @@ AI代理基础类模块
 """
 
 # 标准库导入
+
+# swap model provider without changing higher-level social trading logic
+
+
 import os
 import random
 import time
@@ -82,7 +86,10 @@ class BaseAgent:
             "response": response.choices[0].message.content,  # 提取AI生成的文本内容
             "total_tokens": response.usage.total_tokens,  # 提取总的token使用数量
         }
+        
 
+    # resilience for production-scale multi-agent runs
+    
     @retry(wait=wait_fixed(1000), stop=stop_after_attempt(10))
     def __call_api(
         self,
@@ -133,6 +140,8 @@ class BaseAgent:
             print(f"[API错误] {str(e)}")
             raise  # 重新抛出异常，触发重试机制
 
+    # unified model call interface
+    
     def get_response(
         self,
         user_input=None,
