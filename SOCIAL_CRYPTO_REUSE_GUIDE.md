@@ -1,18 +1,12 @@
 # Reuse Guide: Building a Social Cryptocurrency Trading System from TwinMarket
 
-This guide identifies the most reusable modules in TwinMarket for a new codebase that supports:
-
-- **Leader/Follower trading behavior**
-- **Social propagation through network interactions**
-- **Bias mitigation in decision loops**
-
 ## 1) Core orchestrator
 
 ### `simulation.py`
 - `init_simulation(...)`: main daily simulation loop (load users, graph, beliefs, run agents, persist outputs, match trades, update forum scores).
 - `process_user_input(...)`: per-user pipeline wrapper that prepares profile + belief + strategy context and invokes the trading agent.
 
-**Why reuse:** this file already gives you a scalable event loop for multi-agent simulation and can be adapted from stock sessions to 24/7 crypto sessions by replacing trading-day checks and symbol universes.
+**Why reuse:** this file gives a scalable event loop for multi-agent simulation and can be adapted from stock sessions to 24/7 crypto sessions by replacing trading-day checks and symbol universes.
 
 ## 2) Agent decision and social cognition
 
