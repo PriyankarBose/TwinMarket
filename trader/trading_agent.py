@@ -20,6 +20,9 @@
 """
 
 # 标准库导入
+
+# this is the strongest reusable layer for injecting follower/leader prompts, copy-trading constraints, and anti-bias post-processing before execution
+
 import asyncio
 import copy
 import json
@@ -65,6 +68,7 @@ INFORMATION_DB.load_database()  # 加载新闻数据库
 # 股票数据表名称
 STOCK_DB_NAME = "StockData"
 
+# central class containing user state, social context, market/news context, and decision logic
 
 class PersonalizedStockTrader:
     """
@@ -196,6 +200,9 @@ class PersonalizedStockTrader:
         self.base_agent = BaseAgent(config_path=self.config_path)  # 基础AI代理
         self.price_info = {}  # 价格信息缓存
 
+
+    # converts target-position decisions into quantity/price executable orders
+    
     def _process_decision_result(self, decision_result: dict) -> dict:
         """
         处理交易决策结果，计算具体的交易数量和订单信息
@@ -439,6 +446,8 @@ class PersonalizedStockTrader:
 
         return None, False
 
+    # end-to-end per-user reasoning cycle (social feed reading, analysis, decision generation, posting)
+    
     def input_info(
         self,
         stock_codes: list,
@@ -759,6 +768,8 @@ class PersonalizedStockTrader:
 
         return stock_decisions
 
+    # computes safety bounds around prior close (currently ±10% for A-share constraints)
+    
     def _get_price_limits(self, stock_codes: list) -> dict:
         """
         获取股票的价格限制信息（涨跌停价格）
@@ -893,6 +904,8 @@ class PersonalizedStockTrader:
 
         return "\n".join(result)
 
+    # generates social output (`post`, `type`, `belief`) from conversation context
+    
     def _intention_agent(self, current_date: pd.Timestamp, conversation_history: dict):
         before_decision_history = conversation_history[:-2]
         post_agent = self.base_agent
@@ -923,6 +936,8 @@ class PersonalizedStockTrader:
         # print(post_response_args)
         return post_response_args
 
+    # information-demand generation + batch semantic news retrieval
+    
     def _desire_agent(self, current_date: pd.Timestamp):
         """
         智能新闻查询代理 - 生成查询需求并检索相关信息
@@ -1776,6 +1791,8 @@ class PersonalizedStockTrader:
                 }
             )
 
+    # sanitizes model outputs into executable and constrained trading decisions
+    
     def _polish_decision(
         self, decision_args: dict, cur_positions: dict, available_position: float
     ) -> dict:
