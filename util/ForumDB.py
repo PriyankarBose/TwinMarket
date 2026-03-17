@@ -32,6 +32,9 @@
 """
 
 # 标准库导入
+
+# gives immediate follower-feed mechanics and measurable social influence channels
+
 import math
 import os
 import sqlite3
@@ -51,6 +54,7 @@ FORUM_DB_PATH = "data/syn_100.db"
 # 默认用户数据库路径
 USER_DB_PATH = "data/sys_100.db"
 
+# social tables (posts, reactions, post_references)
 
 def init_db_forum(db_path=FORUM_DB_PATH):
     """
@@ -196,6 +200,7 @@ def update_posts_score_by_date(target_date: str, db_path: str = FORUM_DB_PATH) -
         conn.rollback()  # Rollback in case of error
         return False
 
+# computes engagement-based score propagation
 
 def update_posts_score_by_date_range(
     start_date: str = "2023-01-01",
@@ -758,6 +763,7 @@ async def unlike_post_db(
         print(f"Error unliking post: {e}")
         return False
 
+# executes actions (repost, like, unlike) asynchronously
 
 async def execute_forum_actions(
     forum_args: List[Dict],
@@ -803,6 +809,7 @@ async def execute_forum_actions(
                 user_id=user_id, post_id=post_id, created_at=created_at, db_path=db_path
             )
 
+# belief extraction source by user/time
 
 def get_all_users_posts_db(
     end_date: Optional[pd.Timestamp] = None, db_path: str = FORUM_DB_PATH
@@ -1072,6 +1079,7 @@ def recommend_posts(
         print(f"Error recommending posts: {e}")
         return []
 
+# graph-neighbor-constrained content ranking with time decay
 
 def recommend_post_graph(
     graph: nx.Graph,
