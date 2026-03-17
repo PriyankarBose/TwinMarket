@@ -23,6 +23,9 @@
 """
 
 # 标准库导入
+
+# ideal for cold-starting follower/leader sentiment priors and later integrating de-biasing prompts
+
 import concurrent.futures
 import os
 import random
@@ -181,6 +184,7 @@ def get_init_prompt(row, attitude):
     """
     return prompt
 
+#robust generation fallback
 
 def retry_belief_conversion(agent, row, attitude, max_retries=3, delay=1):
     """
@@ -231,6 +235,8 @@ def retry_belief_conversion(agent, row, attitude, max_retries=3, delay=1):
     return SYSTEM_PROMPT
 
 
+# concurrent belief generation
+
 def process_chunk(chunk, agent):
     """
     处理单个数据块的信念生成函数
@@ -279,6 +285,8 @@ def process_chunk(chunk, agent):
 
     return chunk_copy
 
+
+# concurrent belief generation
 
 def process_dataframe(df, agent, num_threads=96):
     """
@@ -377,6 +385,7 @@ def save_results(df, output_dir):
 
     return result_df
 
+# pipeline for generating initial belief text at scale
 
 def init_belief(
     db_path="data/sys_1000.db",
