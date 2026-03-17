@@ -1,6 +1,8 @@
 import json
 import pandas as pd
 
+# easiest place to add explicit "leader/follower role cards" and bias mitigation instructions
+
 SCHEMA2 = """# 可查询的指标说明：
 
 ## 公司基本信息（静态数据）:
@@ -168,7 +170,8 @@ class TradingPrompt:
 ## 当前持仓情况：
 {chr(10).join(position_details)}""",
         }
-
+# persona + behavior policy envelope
+ 
     @staticmethod
     def get_system_prompt_new(
         user_profile: dict,
@@ -227,7 +230,9 @@ class TradingPrompt:
 - 持仓概述(简要版）：{chr(10).join(position_easy_details)}
 """,
         }
-
+     
+# injects account state and prior belief into context
+ 
     @staticmethod
     def get_user_first_prompt(
         user_profile: dict,
