@@ -129,6 +129,9 @@ results = process_trading_day(decisions, last_prices, current_date)
 
 # ============================ 导入依赖库 ============================
 
+# can be ported to crypto by replacing session assumptions and constraints (e.g., remove market-close auction, add continuous matching/fees/slippage)
+
+
 # 标准库导入
 import json
 import os
@@ -149,6 +152,7 @@ import pandas as pd  # 数据处理
 # 忽略pandas的FutureWarning警告
 warnings.filterwarnings("ignore", category=FutureWarning)
 
+# normalized order object
 
 class Order:
     """
@@ -246,6 +250,7 @@ def validate_order_timestamps(orders: list[Order]) -> bool:
 
     return True
 
+# matching and clearing logic with price-time priority and limit constraints
 
 def calculate_closing_price(
     buy_orders: list[Order],
@@ -1817,6 +1822,7 @@ def read_json(json_file_path):
 
     return converted_decisions
 
+# daily E2E execution entrypoint
 
 def test_matching_system(
     current_date: str,
@@ -2111,6 +2117,9 @@ def update_stock_data_table_holiday(
     except Exception as e:
         # print(f"更新股票数据时发生错误: {e}")
         raise
+
+
+# profile carry-forward in no-trade periods
 
 
 def update_profiles_table_holiday(current_date: str, db_path: str):
