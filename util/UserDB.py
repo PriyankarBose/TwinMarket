@@ -27,6 +27,9 @@
 """
 
 # 标准库导入
+
+# this module is the direct foundation for identifying leaders and assigning follower neighborhoods
+
 import datetime
 import json
 import os
@@ -115,6 +118,7 @@ def get_top_industry_and_category(user_id, db_path=DB_PATH):
     conn.close()
     return top_industry, category_ch, category_eng
 
+# user universe and profile hydration
 
 def get_user_profile(
     user_id: str, db_path: str = DB_PATH, created_at: str = None
@@ -306,6 +310,7 @@ def get_user_trading_records(
     finally:
         conn.close()
 
+# user universe and profile hydration
 
 def get_all_user_ids(
     db_path: str = DB_PATH, timestamp: Optional[pd.Timestamp] = None
@@ -533,6 +538,10 @@ def build_graph(
         raise ValueError(f"Failed to build user similarity graph: {str(e)}")
 
 
+
+#selects high-centrality users (natural "leaders")
+
+
 def get_top_n_users_by_degree(G: nx.Graph, top_n: int) -> list:
     """
     返回图中度数最高的 top_n 个用户 ID。
@@ -559,6 +568,7 @@ def get_top_n_users_by_degree(G: nx.Graph, top_n: int) -> list:
 
     return top_n_users
 
+# builds time-decayed weighted user graph from trading behavior similarity
 
 def build_graph_new(
     db_path: str = DB_PATH,
