@@ -6,6 +6,9 @@
 """
 
 # 标准库导入
+
+# this file already gives a scalable event loop for multi-agent simulation and can be adapted from stock sessions to 24/7 crypto sessions by replacing trading-day checks and symbol universes
+
 import argparse
 import asyncio
 import json
@@ -65,6 +68,7 @@ logging.basicConfig(
 # 线程锁，用于保护并发文件写入操作
 lock = threading.Lock()
 
+#per-user pipeline wrapper that prepares profile + belief + strategy context and invokes the trading agent
 
 def process_user_input(
     user_id,
@@ -230,6 +234,8 @@ def process_user_input(
         print(f"处理用户 {user_id} 时出错: {e}")
         return user_id, {"error": str(e)}, None, None
 
+
+# main daily simulation loop (load users, graph, beliefs, run agents, persist outputs, match trades, update forum scores)
 
 def init_simulation(
     start_date: pd.Timestamp = pd.Timestamp("2023-06-15"),
