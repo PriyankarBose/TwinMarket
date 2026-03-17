@@ -33,6 +33,9 @@
 """
 
 # 标准库导入
+
+# can index crypto-native sources (on-chain events, exchange notices, governance posts, X/Reddit) without changing agent interface
+
 import multiprocessing as mp
 import os
 import pickle
@@ -293,6 +296,9 @@ class InformationDB:
             print(f"Error saving database: {e}")
             return False
 
+    # restores FAISS + metadata store
+
+    
     def load_database(self):
         """Load the FAISS index and metadata from disk"""
         try:
@@ -344,6 +350,8 @@ class InformationDB:
                 break
         return results
 
+    # semantic retrieval by time range
+    
     def search_news(
         self,
         start_date: pd.Timestamp,
