@@ -7,7 +7,7 @@
 
 # 标准库导入
 
-# this file already gives a scalable event loop for multi-agent simulation and can be adapted from stock sessions to 24/7 crypto sessions by replacing trading-day checks and symbol universes
+# this file gives a scalable event loop for multi-agent simulation and can be adapted from stock sessions to 24/7 crypto sessions by replacing trading-day checks and symbol universes
 
 import argparse
 import asyncio
